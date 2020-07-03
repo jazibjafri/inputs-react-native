@@ -1,6 +1,6 @@
 {
     "name": "inputs-react-native",
-    "version": "1.0.0",
+    "version": "1.0.0-alpha",
     "description": "Awesome inputs for react native",
     "main": "dist/index.js",
     "scripts": {

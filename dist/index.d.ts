@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { TextInputProps } from 'react-native';
+import { TextInputProps, StyleProp, ViewStyle, TextStyle } from 'react-native';
 import { Validators } from './validators';
 export interface ReactNativeInput extends TextInputProps {
-    validators: Validators[];
-    onChangeText: (val: string) => void;
+    validators?: Validators[];
+    errorViewStyles?: StyleProp<ViewStyle>;
+    errorTextStyles?: StyleProp<TextStyle>;
+    errorMessage?: string;
+    validateOn?: 'start-editing' | 'end-editing' | 'never';
 }
 declare const Input: React.FC<ReactNativeInput>;
 export default Input;

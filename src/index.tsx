@@ -7,62 +7,86 @@ import {
     TextInputProps,
     NativeSyntheticEvent,
     TextInputEndEditingEventData,
+    StyleProp,
+    ViewStyle,
+    TextStyle,
 } from 'react-native';
 import { styles } from './styles';
 import { validators, Validators } from './validators';
 
 export interface ReactNativeInput extends TextInputProps {
-    validators: Validators[];
-    onChangeText: (val: string) => void;
+    validators?: Validators[];
+    errorViewStyles?: StyleProp<ViewStyle>;
+    errorTextStyles?: StyleProp<TextStyle>;
+    errorMessage?: string;
+    validateOn?: 'start-editing' | 'end-editing' | 'never';
 }
 
 const Input: React.FC<ReactNativeInput> = ({
     style,
     onChangeText,
     value,
-    validators: validatorTypes,
+    validators: validatorTypes = [],
+    errorViewStyles,
+    errorTextStyles,
+    errorMessage: errorMsg,
+    validateOn = 'end-editing',
     ...rest
 }) => {
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+
     const validateInput = (val: string) => {
-        const validations = validatorTypes.map(type => {
-            const currentValidator = validators[type];
-            return currentValidator(val);
-        });
-        const result = validations.reduce((prev, cur) => {
-            /* return failed validation if any one validation fails */
-            return {
-                result: prev.result && cur.result,
-                reason: !prev.result ? prev.reason : cur.reason,
-            };
-        });
-        return result;
+        if (validatorTypes.length > 0) {
+            const validations = validatorTypes.map(type => {
+                const currentValidator = validators[type];
+                return currentValidator(val);
+            });
+            const result = validations.reduce((prev, cur) => {
+                /* return failed validation if any one validation fails */
+                return {
+                    result: prev.result && cur.result,
+                    reason: !prev.result ? prev.reason : cur.reason,
+                };
+            });
+            return result;
+        }
+        return {
+            result: true,
+            reason: 'All validations passed',
+        };
     };
     const handleSuccess = (val: string) => {
         setHasError(false);
         setErrorMessage('');
-        onChangeText(val);
+        if (onChangeText) {
+            onChangeText(val);
+        }
     };
     const handleError = (error: string) => {
         setErrorMessage(error);
         setHasError(true);
     };
     const handleChange = (val: string) => {
-        const validation = validateInput(val);
         handleSuccess(val);
-        if (!validation.result) {
-            handleError(validation.reason);
+        if (validateOn == 'start-editing') {
+            const validation = validateInput(val);
+            if (!validation.result) {
+                handleError(validation.reason);
+            }
         }
         return;
     };
     const handleBlur = (evt: NativeSyntheticEvent<TextInputEndEditingEventData>) => {
-        const validation = validateInput(evt.nativeEvent.text);
-        if (validation.result) {
-            handleSuccess(evt.nativeEvent.text);
-        } else {
-            handleError(validation.reason);
+        if (validateOn == 'end-editing') {
+            const validation = validateInput(evt.nativeEvent.text);
+            if (validation.result) {
+                handleSuccess(evt.nativeEvent.text);
+            } else {
+                handleError(validation.reason);
+            }
         }
+        return;
     };
 
     return (
@@ -75,8 +99,10 @@ const Input: React.FC<ReactNativeInput> = ({
                 style={[styles.defaultInput, style]}
             />
             {hasError && (
-                <View style={styles.defaultError}>
-                    <Text style={styles.defaultErrorText}>{errorMessage}</Text>
+                <View style={[styles.defaultError, errorViewStyles]}>
+                    <Text style={[styles.defaultErrorText, errorTextStyles]}>
+                        {errorMsg || errorMessage}
+                    </Text>
                 </View>
             )}
         </>

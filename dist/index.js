@@ -108,53 +108,66 @@ var validators = {
 };
 
 var Input = function (_a) {
-    var style = _a.style, onChangeText = _a.onChangeText, value = _a.value, validatorTypes = _a.validators, rest = __rest(_a, ["style", "onChangeText", "value", "validators"]);
-    var _b = React.useState(false), hasError = _b[0], setHasError = _b[1];
-    var _c = React.useState(''), errorMessage = _c[0], setErrorMessage = _c[1];
+    var style = _a.style, onChangeText = _a.onChangeText, value = _a.value, _b = _a.validators, validatorTypes = _b === void 0 ? [] : _b, errorViewStyles = _a.errorViewStyles, errorTextStyles = _a.errorTextStyles, errorMsg = _a.errorMessage, _c = _a.validateOn, validateOn = _c === void 0 ? 'end-editing' : _c, rest = __rest(_a, ["style", "onChangeText", "value", "validators", "errorViewStyles", "errorTextStyles", "errorMessage", "validateOn"]);
+    var _d = React.useState(false), hasError = _d[0], setHasError = _d[1];
+    var _e = React.useState(''), errorMessage = _e[0], setErrorMessage = _e[1];
     var validateInput = function (val) {
-        var validations = validatorTypes.map(function (type) {
-            var currentValidator = validators[type];
-            return currentValidator(val);
-        });
-        var result = validations.reduce(function (prev, cur) {
-            /* return failed validation if any one validation fails */
-            return {
-                result: prev.result && cur.result,
-                reason: !prev.result ? prev.reason : cur.reason,
-            };
-        });
-        return result;
+        if (validatorTypes.length > 0) {
+            var validations = validatorTypes.map(function (type) {
+                var currentValidator = validators[type];
+                return currentValidator(val);
+            });
+            var result = validations.reduce(function (prev, cur) {
+                /* return failed validation if any one validation fails */
+                return {
+                    result: prev.result && cur.result,
+                    reason: !prev.result ? prev.reason : cur.reason,
+                };
+            });
+            return result;
+        }
+        return {
+            result: true,
+            reason: 'All validations passed',
+        };
     };
     var handleSuccess = function (val) {
         setHasError(false);
         setErrorMessage('');
-        onChangeText(val);
+        if (onChangeText) {
+            onChangeText(val);
+        }
     };
     var handleError = function (error) {
         setErrorMessage(error);
         setHasError(true);
     };
     var handleChange = function (val) {
-        var validation = validateInput(val);
         handleSuccess(val);
-        if (!validation.result) {
-            handleError(validation.reason);
+        if (validateOn == 'start-editing') {
+            var validation = validateInput(val);
+            if (!validation.result) {
+                handleError(validation.reason);
+            }
         }
         return;
     };
     var handleBlur = function (evt) {
-        var validation = validateInput(evt.nativeEvent.text);
-        if (validation.result) {
-            handleSuccess(evt.nativeEvent.text);
+        if (validateOn == 'end-editing') {
+            var validation = validateInput(evt.nativeEvent.text);
+            if (validation.result) {
+                handleSuccess(evt.nativeEvent.text);
+            }
+            else {
+                handleError(validation.reason);
+            }
         }
-        else {
-            handleError(validation.reason);
-        }
+        return;
     };
     return (React.createElement(React.Fragment, null,
         React.createElement(reactNative.TextInput, __assign({ onChangeText: handleChange, onEndEditing: handleBlur, value: value }, rest, { style: [styles.defaultInput, style] })),
-        hasError && (React.createElement(reactNative.View, { style: styles.defaultError },
-            React.createElement(reactNative.Text, { style: styles.defaultErrorText }, errorMessage)))));
+        hasError && (React.createElement(reactNative.View, { style: [styles.defaultError, errorViewStyles] },
+            React.createElement(reactNative.Text, { style: [styles.defaultErrorText, errorTextStyles] }, errorMsg || errorMessage)))));
 };
 
 exports.default = Input;

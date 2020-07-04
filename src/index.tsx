@@ -59,7 +59,7 @@ const Input: React.FC<ReactNativeInput> = ({
     const handleSuccess = (val: string) => {
         setHasError(false);
         setErrorMessage('');
-        if (onChangeText) {
+        if (onChangeText != undefined) {
             onChangeText(val);
         }
     };

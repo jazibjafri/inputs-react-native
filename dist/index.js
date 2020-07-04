@@ -134,7 +134,7 @@ var Input = function (_a) {
     var handleSuccess = function (val) {
         setHasError(false);
         setErrorMessage('');
-        if (onChangeText) {
+        if (onChangeText != undefined) {
             onChangeText(val);
         }
     };

@@ -28,7 +28,7 @@ const emailValidator = (value: string): ValidatorResult => {
 };
 
 const phoneValidator = (value: string): ValidatorResult => {
-    const result = /^(03[0-9]{9}|\+92[0-9]{10})$/g.test(value);
+    const result = /^[+]{0,1}[0-9]{8,}$/g.test(value);
     return {
         result,
         reason: result ? `Phone ${VALIDATION_PASSED}` : INVALID_PHONE,

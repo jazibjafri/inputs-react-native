@@ -21,6 +21,8 @@ const Component = () => {
 
 And that's it! Your text input is now complete with email validation.
 
+![example-1](img/example-1.PNG?raw=true)
+
 ## All Accepted Props
 
 In addition to all props accepted by `TextInput` from `react-native`, following props are accepted:
@@ -64,3 +66,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
 });
+```
+![example-1](img/example-1.PNG?raw=true)
+
+## License
+
+[MIT](https://github.com/JazibJafri/inputs-react-native/blob/master/LICENSE)

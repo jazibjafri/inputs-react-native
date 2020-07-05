@@ -21,7 +21,7 @@ const Component = () => {
 
 And that's it! Your text input is now complete with email validation.
 
-![example-1](img/example-1.PNG?raw=true)
+![example-1](img/example-1.png?raw=true)
 
 ## All Accepted Props
 
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
 });
 ```
-![example-1](img/example-1.PNG?raw=true)
+![example-1](img/example-2.png?raw=true)
 
 ## License
 

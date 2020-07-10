@@ -29,7 +29,7 @@ In addition to all props accepted by `TextInput` from `react-native`, following 
 
 Property name | Type | Values | Default | Description
 --- | --- | --- | --- | --- |
-`onChangeText` | optional | `(val: string) => void` | `undefined` | function to handle input text change
+`onChangeText` | optional | `(val: string, error: boolean) => void` | `undefined` | returns input text and error status
 `validators` | optional | `Array<'basic' \| 'email \| 'password' \| 'phone'>` | `[]` | validations to apply.
 `validateOn` | optional | `start-editing`, `end-editing`, `never` | `end-editing` | when to run validation
 `errorMessage` | optional | `any` | (separate defaults for each validation type) | custom error message to display when validation fails

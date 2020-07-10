@@ -15,6 +15,7 @@ import { styles } from './styles';
 import { validators, Validators } from './validators';
 
 export interface ReactNativeInput extends TextInputProps {
+    onChangeText: (val?: string, err?: boolean) => void;
     validators?: Validators[];
     errorViewStyles?: StyleProp<ViewStyle>;
     errorTextStyles?: StyleProp<TextStyle>;
@@ -56,24 +57,25 @@ const Input: React.FC<ReactNativeInput> = ({
             reason: 'All validations passed',
         };
     };
-    const handleSuccess = (val: string) => {
+    const handleSuccess = () => {
         setHasError(false);
         setErrorMessage('');
-        if (onChangeText != undefined) {
-            onChangeText(val);
-        }
     };
     const handleError = (error: string) => {
         setErrorMessage(error);
         setHasError(true);
     };
     const handleChange = (val: string) => {
-        handleSuccess(val);
+        const validation = validateInput(val);
         if (validateOn == 'start-editing') {
-            const validation = validateInput(val);
             if (!validation.result) {
                 handleError(validation.reason);
+            } else {
+                handleSuccess();
             }
+        }
+        if (onChangeText != undefined) {
+            onChangeText(val, !validation.result);
         }
         return;
     };
@@ -81,7 +83,7 @@ const Input: React.FC<ReactNativeInput> = ({
         if (validateOn == 'end-editing') {
             const validation = validateInput(evt.nativeEvent.text);
             if (validation.result) {
-                handleSuccess(evt.nativeEvent.text);
+                handleSuccess();
             } else {
                 handleError(validation.reason);
             }

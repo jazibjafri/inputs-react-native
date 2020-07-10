@@ -131,24 +131,26 @@ var Input = function (_a) {
             reason: 'All validations passed',
         };
     };
-    var handleSuccess = function (val) {
+    var handleSuccess = function () {
         setHasError(false);
         setErrorMessage('');
-        if (onChangeText != undefined) {
-            onChangeText(val);
-        }
     };
     var handleError = function (error) {
         setErrorMessage(error);
         setHasError(true);
     };
     var handleChange = function (val) {
-        handleSuccess(val);
+        var validation = validateInput(val);
         if (validateOn == 'start-editing') {
-            var validation = validateInput(val);
             if (!validation.result) {
                 handleError(validation.reason);
             }
+            else {
+                handleSuccess();
+            }
+        }
+        if (onChangeText != undefined) {
+            onChangeText(val, !validation.result);
         }
         return;
     };
@@ -156,7 +158,7 @@ var Input = function (_a) {
         if (validateOn == 'end-editing') {
             var validation = validateInput(evt.nativeEvent.text);
             if (validation.result) {
-                handleSuccess(evt.nativeEvent.text);
+                handleSuccess();
             }
             else {
                 handleError(validation.reason);

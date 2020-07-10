@@ -1,6 +1,6 @@
 {
     "name": "inputs-react-native",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Awesome inputs for react native with built-in validations",
     "main": "dist/index.js",
     "scripts": {

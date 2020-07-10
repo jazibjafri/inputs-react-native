@@ -1,7 +1,7 @@
 {
     "name": "inputs-react-native",
     "version": "1.0.0",
-    "description": "Awesome inputs for react native",
+    "description": "Awesome inputs for react native with built-in validations",
     "main": "dist/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",

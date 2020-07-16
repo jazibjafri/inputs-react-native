@@ -1,6 +1,8 @@
 # Inputs React Native
 Inputs for react native with easy built-in validations.
 
+> **For a complete example, see below**
+
 ## Installation
 
 ```
@@ -8,6 +10,7 @@ npm install inputs-react-native
 ```
 
 ## Basic Usage
+
 ```js
 import TextInput from 'inputs-react-native'
 
@@ -41,20 +44,32 @@ All other props are passed down to react-native's `TextInput`
 ## Example
 
 ```js
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import TextInput from 'inputs-react-native';
 
 const Input = () => {
-  <>
-      <TextInput
-          validators={['basic', 'email']}
-          validateOn="start-editing"
-          errorMessage="Invalid email format"
-          errorViewStyles={styles.errorViewStyles}
-          errorTextStyles={styles.errorTextStyles}
-      />  
-  </>
+    const [email, setEmail] = useState('');
+    
+    const handleOnChange = (val, err) => {
+        if(err) {
+            // handle error
+        }
+        //handle change
+        setEmail(val);
+    }
+  
+    return (
+        <TextInput
+            validators={['basic', 'email']}
+            onChangeText={(val, err) => handleOnChange(val, err)}
+            value={email}
+            validateOn="start-editing"
+            errorMessage="Invalid email format"
+            errorViewStyles={styles.errorViewStyles}
+            errorTextStyles={styles.errorTextStyles}
+        />
+    );
 }
 
 const styles = StyleSheet.create({
